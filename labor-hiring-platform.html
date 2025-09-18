@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KaamWale - Professional Labour Hiring Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #f59e0b;
+            --success: #10b981;
+            --danger: #ef4444;
+            --dark: #1f2937;
+            --light: #f3f4f6;
+            --white: #ffffff;
+            --text: #1f2937;
+            --bg-primary: #ffffff;
+            --bg-secondary: #f3f4f6;
+            --shadow: rgba(0,0,0,0.1);
+            --gradient-1: #667eea;
+            --gradient-2: #764ba2;
+        }
+
+        body.dark-mode {
+            --dark: #f3f4f6;
+            --light: #1f2937;
+            --white: #0f172a;
+            --text: #f3f4f6;
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --shadow: rgba(255,255,255,0.1);
+            --gradient-1: #4c1d95;
+            --gradient-2: #5b21b6;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--gradient-1) 0%, var(--gradient-2) 100%);
+            min-height: 100vh;
+            color: var(--text);
+            transition: all 0.3s ease;
+        }
+
+        /* Language Toggle */
+        .language-toggle {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            z-index: 3000;
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .lang-btn {
+            padding: 0.5rem 1rem;
+            background: var(--bg-primary);
+            border: 2px solid var(--primary);
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .lang-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .lang-btn:hover {
+            transform: scale(1.05);
+        }
+
+        /* Dark Mode Toggle */
+        .dark-mode-toggle {
+            width: 50px;
+            height: 26px;
+            background: var(--bg-secondary);
+            border-radius: 13px;
+            position: relative;
+            cursor: pointer;
+            margin-left: 1rem;
+            transition: all 0.3s;
+        }
+
+        .dark-mode-toggle::after {
+            content: '🌙';
+            position: absolute;
+            width: 22px;
+            height: 22px;
+            background: var(--primary);
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+        }
+
+        body.dark-mode .dark-mode-toggle::after {
+            left: 26px;
+            content: '☀️';
+        }
+
+        /* Navigation */
+        nav {
+            background: var(--bg-primary);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            position: fixed;
+            width: 100%;
+            top: 4rem;
+            z-index: 1000;
+            box-shadow: 0 2px 20px var(--shadow);
+            transition: all 0.3s;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, var(--gradient-1), var(--gradient-2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            cursor: pointer;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: var(--text);
+            text-decoration: none;
+            transition: all 0.3s;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+        }
+
+        .nav-link:hover {
+            color: var(--primary);
+            background: rgba(99, 102, 241, 0.1);
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--gradient-1), var(--gradient-2));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px var(--shadow);
+        }
+
+        .btn-secondary {
+            background: var(--bg-primary);
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 10rem 2rem 4rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .hero-content h1 {
+            font-size: 3.5rem;
+            color: white;
+            margin-bottom: 1.5rem;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .hero-content p {
+            font-size: 1.25rem;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 2rem;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            animation: fadeInUp 1.2s ease-out;
+        }
+
+        .service-cards {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            animation: fadeInRight 1s ease-out;
+        }
+
+        .service-card {
+            background: var(--bg-primary);
+            padding: 1.5rem;
+            border-radius: 20px;
+            text-align: center;
+            transition: all 0.3s;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+
+        .service-card:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 20px 40px var(--shadow);
+            border-color: var(--primary);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 2000;
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: var(--bg-primary);
+            padding: 2rem;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 2rem;
+            cursor: pointer;
+            color: var(--text);
+            transition: all 0.3s;
+        }
+
+        .close-btn:hover {
+            color: var(--danger);
+            transform: rotate(90deg);
+        }
+
+        /* Camera Section */
+        .camera-section {
+            margin: 1.5rem 0;
+            text-align: center;
+        }
+
+        #videoElement {
+            width: 100%;
+            max-width: 400px;
+            border-radius: 15px;
+            margin: 1rem auto;
+            display: block;
+            background: #000;
+        }
+
+        #canvas {
+            display: none;
+        }
+
+        .camera-controls {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .camera-btn {
+            padding: 0.75rem 1.5rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .camera-btn:hover {
+            transform: scale(1.05);
+            background: var(--primary-dark);
+        }
+
+        .camera-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        #capturedImage {
+            max-width: 100%;
+            border-radius: 15px;
+            margin: 1rem 0;
+        }
+
+        /* Form Styling */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .form-input, .form-select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--bg-secondary);
+            border-radius: 10px;
+            background: var(--bg-primary);
+            color: var(--text);
+            transition: all 0.3s;
+        }
+
+        .form-input:focus, .form-select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.5rem;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            padding: 0.5rem;
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .checkbox-item:hover {
+            background: rgba(99, 102, 241, 0.1);
+        }
+
+        .pricing-options {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+        }
+
+        .pricing-option {
+            padding: 1rem;
+            border: 2px solid var(--bg-secondary);
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            background: var(--bg-primary);
+            transition: all 0.3s;
+        }
+
+        .pricing-option:hover, .pricing-option.selected {
+            border-color: var(--primary);
+            background: rgba(99, 102, 241, 0.05);
+        }
+
+        /* Worker Cards */
+        .worker-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+            padding: 2rem;
+        }
+
+        .worker-card {
+            background: var(--bg-primary);
+            border-radius: 20px;
+            overflow: hidden;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .worker-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px var(--shadow);
+        }
+
+        .worker-photo {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            background: linear-gradient(135deg, var(--gradient-1), var(--gradient-2));
+        }
+
+        .worker-header {
+            padding: 1.5rem;
+            background: linear-gradient(135deg, var(--gradient-1), var(--gradient-2));
+            color: white;
+        }
+
+        .worker-body {
+            padding: 1.5rem;
+        }
+
+        .worker-skills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .skill-tag {
+            padding: 0.25rem 0.75rem;
+            background: var(--bg-secondary);
+            border-radius: 20px;
+            font-size: 0.875rem;
+            color: var(--text);
+        }
+
+        /* Success Message */
+        .success-message {
+            position: fixed;
+            top: 5rem;
+            right: -400px;
+            background: var(--success);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px var(--shadow);
+            transition: right 0.3s;
+            z-index: 3000;
+        }
+
+        .success-message.show {
+            right: 2rem;
+        }
+
+        /* Features Section */
+        .features {
+            background: var(--bg-primary);
+            padding: 4rem 2rem;
+            margin-top: -2rem;
+            border-radius: 40px 40px 0 0;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            color: var(--text);
+            margin-bottom: 3rem;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .feature-card {
+            padding: 2rem;
+            border-radius: 20px;
+            background: var(--bg-secondary);
+            transition: all 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px var(--shadow);
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInRight {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero {
+                grid-template-columns: 1fr;
+                padding: 8rem 1rem 2rem;
+            }
+
+            .hero-content h1 {
+                font-size: 2rem;
+            }
+
+            .nav-links {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .checkbox-group {
+                grid-template-columns: 1fr;
+            }
+
+            .pricing-options {
+                grid-template-columns: 1fr;
+            }
+
+            .language-toggle {
+                top: 4.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Language & Dark Mode Toggle -->
+    <div class="language-toggle">
+        <button class="lang-btn active" onclick="changeLanguage('hi')">हिंदी</button>
+        <button class="lang-btn" onclick="changeLanguage('en')">English</button>
+        <div class="dark-mode-toggle" onclick="toggleDarkMode()"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <div class="logo">🔨 KaamWale</div>
+            <div class="nav-links">
+                <a href="#home" class="nav-link" data-hi="होम" data-en="Home">होम</a>
+                <a href="#services" class="nav-link" data-hi="सेवाएं" data-en="Services">सेवाएं</a>
+                <a href="#workers" class="nav-link" data-hi="कामगार" data-en="Workers">कामगार</a>
+                <button class="btn btn-secondary" onclick="openModal('register')" data-hi="कामगार रजिस्टर करें" data-en="Register as Worker">कामगार रजिस्टर करें</button>
+                <button class="btn btn-primary" onclick="openModal('hire')" data-hi="कामगार खोजें" data-en="Find Worker">कामगार खोजें</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <h1 data-hi="घर के काम के लिए कुशल कामगार" data-en="Skilled Workers for Home Services">घर के काम के लिए कुशल कामगार</h1>
+            <p data-hi="प्लंबिंग, इलेक्ट्रिशियन, बढ़ई, पेंटर और अन्य सभी घरेलू सेवाओं के लिए verified professionals" 
+               data-en="Verified professionals for plumbing, electrical, carpentry, painting and all home services">
+                प्लंबिंग, इलेक्ट्रिशियन, बढ़ई, पेंटर और अन्य सभी घरेलू सेवाओं के लिए verified professionals
+            </p>
+            <div class="hero-buttons">
+                <button class="btn btn-primary" onclick="openModal('hire')" data-hi="अभी बुक करें" data-en="Book Now">अभी बुक करें</button>
+                <button class="btn btn-secondary" onclick="openModal('register')" data-hi="कामगार बनें" data-en="Become a Worker">कामगार बनें</button>
+            </div>
+        </div>
+        <div class="service-cards">
+            <div class="service-card" onclick="selectService('plumber')">
+                <div style="font-size: 2.5rem;">🔧</div>
+                <div data-hi="प्लंबर" data-en="Plumber">प्लंबर</div>
+            </div>
+            <div class="service-card" onclick="selectService('electrician')">
+                <div style="font-size: 2.5rem;">💡</div>
+                <div data-hi="इलेक्ट्रिशियन" data-en="Electrician">इलेक्ट्रिशियन</div>
+            </div>
+            <div class="service-card" onclick="selectService('carpenter')">
+                <div style="font-size: 2.5rem;">🪚</div>
+                <div data-hi="बढ़ई" data-en="Carpenter">बढ़ई</div>
+            </div>
+            <div class="service-card" onclick="selectService('painter')">
+                <div style="font-size: 2.5rem;">🎨</div>
+                <div data-hi="पेंटर" data-en="Painter">पेंटर</div>
+            </div>
+            <div class="service-card" onclick="selectService('cleaner')">
+                <div style="font-size: 2.5rem;">🧹</div>
+                <div data-hi="सफाई कर्मी" data-en="Cleaner">सफाई कर्मी</div>
+            </div>
+            <div class="service-card" onclick="selectService('mason')">
+                <div style="font-size: 2.5rem;">🧱</div>
+                <div data-hi="राजमिस्त्री" data-en="Mason">राजमिस्त्री</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features" id="services">
+        <h2 class="section-title" data-hi="हमारी विशेषताएं" data-en="Our Features">हमारी विशेषताएं</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">✅</div>
+                <h3 data-hi="Verified कामगार" data-en="Verified Workers">Verified कामगार</h3>
+                <p data-hi="सभी कामगार पूरी तरह से verified और background checked हैं" 
+                   data-en="All workers are fully verified and background checked">
+                    सभी कामगार पूरी तरह से verified और background checked हैं
+                </p>
+            </div>
+            <div class="feature-card">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">💰</div>
+                <h3 data-hi="पारदर्शी मूल्य" data-en="Transparent Pricing">पारदर्शी मूल्य</h3>
+                <p data-hi="घंटे, दिन या प्रोजेक्ट के हिसाब से clear pricing" 
+                   data-en="Clear pricing by hour, day or project basis">
+                    घंटे, दिन या प्रोजेक्ट के हिसाब से clear pricing
+                </p>
+            </div>
+            <div class="feature-card">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">⚡</div>
+                <h3 data-hi="तुरंत बुकिंग" data-en="Instant Booking">तुरंत बुकिंग</h3>
+                <p data-hi="कुछ ही मिनटों में अपनी जरूरत का कामगार बुक करें" 
+                   data-en="Book the worker you need in just minutes">
+                    कुछ ही मिनटों में अपनी जरूरत का कामगार बुक करें
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Workers Section -->
+    <section id="workers">
+        <div class="worker-list">
+            <!-- Sample Worker Cards with Photos -->
+            <div class="worker-card">
+                <img class="worker-photo" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='200'%3E%3Crect width='300' height='200' fill='%23667eea'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='white' font-size='20'%3EWorker Photo%3C/text%3E%3C/svg%3E" alt="Worker">
+                <div class="worker-header">
+                    <div style="font-size: 1.25rem; font-weight: 600;">राजू कुमार / Raju Kumar</div>
+                    <div style="display: flex; gap: 0.25rem; margin-top: 0.5rem;">
+                        ⭐⭐⭐⭐⭐ 4.8 (120)
+                    </div>
+                </div>
+                <div class="worker-body">
+                    <div class="worker-skills">
+                        <span class="skill-tag">Plumbing</span>
+                        <span class="skill-tag">Pipe Fitting</span>
+                    </div>
+                    <div style="font-size: 1.25rem; color: var(--primary); margin: 1rem 0;">₹500/hr</div>
+                    <button class="btn btn-primary" style="width: 100%;" onclick="hireWorker('Raju Kumar')">
+                        <span data-hi="बुक करें" data-en="Book Now">बुक करें</span>
+                    </button>
+                </div>
+            </div>
+            <div class="worker-card">
+                <img class="worker-photo" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='200'%3E%3Crect width='300' height='200' fill='%23764ba2'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='white' font-size='20'%3EWorker Photo%3C/text%3E%3C/svg%3E" alt="Worker">
+                <div class="worker-header">
+                    <div style="font-size: 1.25rem; font-weight: 600;">सुरेश वर्मा / Suresh Verma</div>
+                    <div style="display: flex; gap: 0.25rem; margin-top: 0.5rem;">
+                        ⭐⭐⭐⭐ 4.5 (85)
+                    </div>
+                </div>
+                <div class="worker-body">
+                    <div class="worker-skills">
+                        <span class="skill-tag">Electrician</span>
+                        <span class="skill-tag">AC Repair</span>
+                    </div>
+                    <div style="font-size: 1.25rem; color: var(--primary); margin: 1rem 0;">₹600/hr</div>
+                    <button class="btn btn-primary" style="width: 100%;" onclick="hireWorker('Suresh Verma')">
+                        <span data-hi="बुक करें" data-en="Book Now">बुक करें</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Worker Registration Modal -->
+    <div class="modal" id="registerModal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('register')">&times;</span>
+            <h2 data-hi="कामगार रजिस्ट्रेशन" data-en="Worker Registration">कामगार रजिस्ट्रेशन</h2>
+            
+            <!-- Camera Section -->
+            <div class="camera-section">
+                <h3 data-hi="अपनी फोटो लें" data-en="Take Your Photo">अपनी फोटो लें</h3>
+                <video id="videoElement" autoplay></video>
+                <canvas id="canvas"></canvas>
+                <img id="capturedImage" style="display: none;">
+                <div class="camera-controls">
+                    <button class="camera-btn" onclick="startCamera()" data-hi="कैमरा शुरू करें" data-en="Start Camera">कैमरा शुरू करें</button>
+                    <button class="camera-btn" onclick="switchCamera()" data-hi="कैमरा बदलें" data-en="Switch Camera">कैमरा बदलें</button>
+                    <button class="camera-btn" onclick="capturePhoto()" data-hi="फोटो लें" data-en="Capture Photo">फोटो लें</button>
+                    <button class="camera-btn" onclick="retakePhoto()" style="display: none;" data-hi="फिर से लें" data-en="Retake">फिर से लें</button>
+                </div>
+            </div>
+
+            <form id="workerForm">
+                <div class="form-group">
+                    <label class="form-label" data-hi="पूरा नाम *" data-en="Full Name *">पूरा नाम *</label>
+                    <input type="text" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" data-hi="मोबाइल नंबर *" data-en="Mobile Number *">मोबाइल नंबर *</label>
+                    <input type="tel" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" data-hi="ईमेल" data-en="Email">ईमेल</label>
+                    <input type="email" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" data-hi="पता *" data-en="Address *">पता *</label>
+                    <input type="text" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" data-hi="अनुभव (वर्षों में) *" data-en="Experience (in years) *">अनुभव (वर्षों में) *</label>
+                    <select class="form-select" required>
+                        <option value="">Select</option>
+                        <option value="0-1">0-1 years</option>
+                        <option value="1-3">1-3 years</option>
+                        <option value="3-5">3-5 years</option>
+                        <option value="5+">5+ years</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" data-hi="कौशल/सेवाएं *" data-en="Skills/Services *">कौशल/सेवाएं *</label>
